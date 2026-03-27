@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__bigquery__search_catalog",
+      "mcp__mcp-registry__search_mcp_registry"
+    ]
+  }
+}

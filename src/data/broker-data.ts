@@ -1,0 +1,336 @@
+export interface BrokerKeyData {
+  label: string;
+  value: string;
+  highlight?: boolean;
+}
+
+export interface BrokerInfo {
+  name: string;
+  logo: string;
+  score: number;
+  bestFor: string;
+  badges: string[];
+  awarded: boolean;
+  keyData: BrokerKeyData[];
+  reviewUrl: string;
+  visitUrl: string;
+}
+
+const BROKER_REGISTRY: Record<string, BrokerInfo> = {
+  'Interactive Brokers': {
+    name: 'Interactive Brokers',
+    logo: 'https://brokerchooser.com/storage/2514/interactive-brokers-review.png',
+    score: 4.9,
+    bestFor: 'Investors and traders looking for a great trading platform, wide market coverage and solid research',
+    badges: ['Available in HU', 'Trusted', 'Tested'],
+    awarded: true,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Low' },
+      { label: 'FX fee', value: 'Low' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: '1 day' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/interactive-brokers-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/interactive-brokers',
+  },
+  'Saxo Bank': {
+    name: 'Saxo',
+    logo: 'https://brokerchooser.com/storage/2542/saxo-bank-review.png',
+    score: 4.9,
+    bestFor: 'Investors and traders looking for a great trading platform, wide market coverage and solid research',
+    badges: ['Available in HU', 'Trusted', 'Tested'],
+    awarded: true,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Low' },
+      { label: 'FX fee', value: 'Low' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: '1 day' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/saxo-bank-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/saxo-bank',
+  },
+  'XTB': {
+    name: 'XTB',
+    logo: 'https://brokerchooser.com/storage/2566/xtb-review.png',
+    score: 4.6,
+    bestFor: 'Traders looking for zero-commission stocks and a user-friendly platform with strong educational content',
+    badges: ['Available in HU', 'Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Free' },
+      { label: 'FX fee', value: 'Low' },
+      { label: 'Inactivity fee', value: 'Yes (after 12 mo)' },
+      { label: 'Account opening', value: '1 day' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/xtb-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/xtb',
+  },
+  'eToro': {
+    name: 'eToro',
+    logo: 'https://brokerchooser.com/storage/2490/etoro-review.png',
+    score: 4.7,
+    bestFor: 'Beginners looking for an easy-to-use platform with social and copy trading features',
+    badges: ['Available in HU', 'Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$50' },
+      { label: 'Stock fee', value: 'Free' },
+      { label: 'FX fee', value: 'Medium' },
+      { label: 'Inactivity fee', value: 'Yes (after 12 mo)', highlight: false },
+      { label: 'Account opening', value: '1 day' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/etoro-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/etoro',
+  },
+  'Capital.com': {
+    name: 'Capital.com',
+    logo: 'https://brokerchooser.com/storage/2475/capitalcom-review.png',
+    score: 4.5,
+    bestFor: 'CFD traders looking for tight spreads and a slick mobile app with AI-assisted trading insights',
+    badges: ['Available in HU', 'Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$20' },
+      { label: 'Stock fee', value: 'CFD only' },
+      { label: 'FX fee', value: 'Low' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: 'Instant' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/capital-com-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/capital-com',
+  },
+  'Lightyear': {
+    name: 'Lightyear',
+    logo: 'https://brokerchooser.com/storage/2518/lightyear-review.png',
+    score: 4.2,
+    bestFor: 'European investors wanting low-cost multi-currency investing with competitive FX rates',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Free' },
+      { label: 'FX fee', value: 'Very low' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: '1 day' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/lightyear-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/lightyear',
+  },
+  'Trading 212': {
+    name: 'Trading 212',
+    logo: 'https://brokerchooser.com/storage/2560/trading-212-review.png',
+    score: 4.2,
+    bestFor: 'Beginners looking for commission-free stock trading with fractional shares and an easy-to-use app',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$1' },
+      { label: 'Stock fee', value: 'Free' },
+      { label: 'FX fee', value: 'Medium' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: 'Instant' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/trading-212-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/trading-212',
+  },
+  'DEGIRO': {
+    name: 'DEGIRO',
+    logo: 'https://brokerchooser.com/storage/2533/plus500-review.png',
+    score: 4.0,
+    bestFor: 'Cost-conscious European investors wanting access to a wide range of global markets at low fees',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Low' },
+      { label: 'FX fee', value: 'Medium' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: '1-3 days' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/degiro-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/degiro',
+  },
+  'Revolut': {
+    name: 'Revolut',
+    logo: 'https://brokerchooser.com/storage/2530/oanda-review.png',
+    score: 3.7,
+    bestFor: 'Casual investors who want to manage banking and investing in one app',
+    badges: ['Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Free (limited)' },
+      { label: 'FX fee', value: 'Low' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: 'Instant' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/revolut-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/revolut',
+  },
+  'Plus500': {
+    name: 'Plus500',
+    logo: 'https://brokerchooser.com/storage/2533/plus500-review.png',
+    score: 4.1,
+    bestFor: 'CFD traders who want a simple, intuitive platform with a wide range of instruments',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$100' },
+      { label: 'Stock fee', value: 'CFD only' },
+      { label: 'FX fee', value: 'Medium' },
+      { label: 'Inactivity fee', value: 'Yes (after 3 mo)' },
+      { label: 'Account opening', value: 'Instant' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/plus500-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/plus500',
+  },
+  'IC Markets': {
+    name: 'IC Markets',
+    logo: 'https://brokerchooser.com/storage/2478/cmc-markets-review.png',
+    score: 4.3,
+    bestFor: 'Active forex and CFD traders looking for tight raw spreads and fast execution',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$200' },
+      { label: 'Stock fee', value: 'CFD only' },
+      { label: 'FX fee', value: 'Very low' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: '1-2 days' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/ic-markets-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/ic-markets',
+  },
+  'IG': {
+    name: 'IG',
+    logo: '',
+    score: 4.4,
+    bestFor: 'Experienced traders wanting a comprehensive platform with excellent research and education',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Low' },
+      { label: 'FX fee', value: 'Low' },
+      { label: 'Inactivity fee', value: 'Yes (after 2 yr)' },
+      { label: 'Account opening', value: '1-3 days' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/ig-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/ig',
+  },
+  'Binance': {
+    name: 'Binance',
+    logo: '',
+    score: 3.8,
+    bestFor: 'Crypto traders looking for the widest selection of coins and advanced trading tools',
+    badges: ['Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Crypto fee', value: 'Very low' },
+      { label: 'Fiat deposit', value: 'Available' },
+      { label: 'Staking', value: 'Yes' },
+      { label: 'Account opening', value: 'Instant' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/binance-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/binance',
+  },
+  'Kraken': {
+    name: 'Kraken',
+    logo: '',
+    score: 3.9,
+    bestFor: 'Security-focused crypto traders wanting a reputable exchange with good liquidity',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Crypto fee', value: 'Low' },
+      { label: 'Fiat deposit', value: 'Available' },
+      { label: 'Staking', value: 'Yes' },
+      { label: 'Account opening', value: 'Instant' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/kraken-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/kraken',
+  },
+  'Freetrade': {
+    name: 'Freetrade',
+    logo: '',
+    score: 3.6,
+    bestFor: 'UK investors looking for a simple, commission-free ISA and stock trading app',
+    badges: ['Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'Free' },
+      { label: 'FX fee', value: 'Medium' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: 'Instant' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/freetrade-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/freetrade',
+  },
+  'Pepperstone': {
+    name: 'Pepperstone',
+    logo: '',
+    score: 4.3,
+    bestFor: 'Active forex and CFD traders wanting tight spreads with MetaTrader and cTrader support',
+    badges: ['Trusted', 'Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$0' },
+      { label: 'Stock fee', value: 'CFD only' },
+      { label: 'FX fee', value: 'Very low' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: '1 day' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/pepperstone-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/pepperstone',
+  },
+  'NinjaTrader': {
+    name: 'NinjaTrader',
+    logo: '',
+    score: 4.0,
+    bestFor: 'Futures traders wanting an advanced charting platform with competitive commissions',
+    badges: ['Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$50' },
+      { label: 'Futures fee', value: 'Low' },
+      { label: 'Platform fee', value: 'Free (basic)' },
+      { label: 'Inactivity fee', value: 'No', highlight: true },
+      { label: 'Account opening', value: '1-2 days' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/ninjatrader-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/ninjatrader',
+  },
+  'NAGA': {
+    name: 'NAGA',
+    logo: '',
+    score: 3.3,
+    bestFor: 'Social traders looking for copy trading with stocks, forex, and crypto in one platform',
+    badges: ['Tested'],
+    awarded: false,
+    keyData: [
+      { label: 'Minimum deposit', value: '$250' },
+      { label: 'Stock fee', value: 'CFD only' },
+      { label: 'FX fee', value: 'Medium' },
+      { label: 'Inactivity fee', value: 'Yes' },
+      { label: 'Account opening', value: '1 day' },
+    ],
+    reviewUrl: 'https://brokerchooser.com/broker-reviews/naga-review',
+    visitUrl: 'https://brokerchooser.com/go-to-broker/naga',
+  },
+};
+
+export function getBrokerInfo(name: string): BrokerInfo | undefined {
+  return BROKER_REGISTRY[name];
+}
+
+export function getBrokerLogo(name: string): string {
+  return BROKER_REGISTRY[name]?.logo || '';
+}
+
+export { BROKER_REGISTRY };
