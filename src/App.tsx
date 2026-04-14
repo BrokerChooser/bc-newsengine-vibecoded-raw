@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import NewsHome from './pages/NewsHome';
 import ArticlePage from './pages/ArticlePage';
+import BrokerNewsPage from './pages/BrokerNewsPage';
 
 /** Scroll to top on every route change */
 function ScrollToTop() {
@@ -57,6 +58,7 @@ export default function App() {
         <main className="flex-1">
           <Routes>
             <Route path="/news" element={<NewsHome />} />
+            <Route path="/news/broker/:brokerSlug" element={<BrokerNewsPage />} />
             <Route path="/news/:slug" element={<ArticlePage />} />
             <Route path="*" element={<Navigate to="/news" replace />} />
           </Routes>

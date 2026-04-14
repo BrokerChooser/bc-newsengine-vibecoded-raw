@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import type { BCEnrichedArticle } from '../../types/newsapi';
 import Badge from '../ui/Badge';
-import { categoryMeta } from '../../data/dummy-articles';
+import { categoryMeta } from '../../data/news-utils';
+
+const FALLBACK_IMAGE = 'https://brokerchooser.com/images/og-image.jpg';
 
 function stripLinks(text: string): string {
   return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
@@ -12,7 +14,7 @@ interface HeroCardProps {
 }
 
 export default function HeroCard({ article }: HeroCardProps) {
-  const catLabel = categoryMeta[article.bcCategory].label;
+  const catLabel = categoryMeta[article.bcCategory]?.shortLabel ?? article.bcCategory;
 
   return (
     <Link
@@ -25,10 +27,11 @@ export default function HeroCard({ article }: HeroCardProps) {
           {/* Image */}
           <div className="relative aspect-video md:aspect-auto md:min-h-96 overflow-hidden">
             <img
-              src={article.image}
+              src={article.image || FALLBACK_IMAGE}
               alt=""
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="eager"
+              onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGE; }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-slate-900/40 hidden md:block" />
           </div>

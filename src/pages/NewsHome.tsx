@@ -1,63 +1,139 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import type { BCNewsCategory } from '../types/newsapi';
-import { dummyArticles, categoryMeta, getArticlesByCategory } from '../data/dummy-articles';
+import { categoryMeta, getArticlesByCategory } from '../data/news-utils';
+import { useArticles } from '../hooks/useArticles';
 import CategoryNav from '../components/ui/CategoryNav';
 import HeroCard from '../components/news/HeroCard';
 import ArticleCard from '../components/news/ArticleCard';
+import Pagination from '../components/ui/Pagination';
+import { useSEO } from '../hooks/useSEO';
+import {
+  DEFAULT_TITLE,
+  DEFAULT_DESCRIPTION,
+  BASE_URL,
+  articleUrl,
+  buildHomePageSchema,
+} from '../utils/seo';
+
+const PAGE_SIZE = 20;
+
+function buildHref(page: number, category: BCNewsCategory | 'all'): string {
+  const params = new URLSearchParams();
+  if (category !== 'all') params.set('category', category);
+  if (page > 1) params.set('page', String(page));
+  const qs = params.toString();
+  return `/news${qs ? `?${qs}` : ''}`;
+}
+
+function buildCanonical(page: number, category: BCNewsCategory | 'all'): string {
+  const params = new URLSearchParams();
+  if (category !== 'all') params.set('category', category);
+  if (page > 1) params.set('page', String(page));
+  const qs = params.toString();
+  return `${BASE_URL}/news${qs ? `?${qs}` : ''}`;
+}
 
 export default function NewsHome() {
-  const [activeCategory, setActiveCategory] = useState<BCNewsCategory | 'all'>('all');
+  const { articles: allArticles, loading } = useArticles();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const handleCategoryChange = useCallback((cat: BCNewsCategory | 'all') => {
-    setActiveCategory(cat);
+  const rawCategory = searchParams.get('category');
+  const activeCategory: BCNewsCategory | 'all' = rawCategory ? (rawCategory as BCNewsCategory) : 'all';
+  const currentPage = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
+
+  const filteredArticles = useMemo(() => {
+    if (activeCategory === 'all') return allArticles;
+    return getArticlesByCategory(allArticles, activeCategory);
+  }, [activeCategory, allArticles]);
+
+  // Page 1 "all": hero + 4 top stories + 15 grid = 20
+  // Page 1 category / page 2+: straight grid of PAGE_SIZE
+  const isFirstAllPage = activeCategory === 'all' && currentPage === 1;
+
+  const pagedArticles = useMemo(() => {
+    if (isFirstAllPage) return filteredArticles.slice(0, PAGE_SIZE);
+    const offset = (currentPage - 1) * PAGE_SIZE;
+    return filteredArticles.slice(offset, offset + PAGE_SIZE);
+  }, [filteredArticles, currentPage, isFirstAllPage]);
+
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(filteredArticles.length / PAGE_SIZE)),
+    [filteredArticles]
+  );
+
+  const homeSchema = useMemo(
+    () =>
+      buildHomePageSchema(
+        allArticles.slice(0, 10).map((a) => ({
+          title: a.title,
+          url: articleUrl(a.bcSlug),
+          image: a.image ?? '',
+          datePublished: a.dateTimePub,
+        }))
+      ),
+    [allArticles]
+  );
+
+  const pageTitle =
+    activeCategory === 'all'
+      ? currentPage > 1
+        ? `${DEFAULT_TITLE} — Page ${currentPage}`
+        : DEFAULT_TITLE
+      : currentPage > 1
+        ? `${categoryMeta[activeCategory]?.label} News | BrokerChooser — Page ${currentPage}`
+        : `${categoryMeta[activeCategory]?.label} News | BrokerChooser`;
+
+  useSEO({
+    title: pageTitle,
+    description: DEFAULT_DESCRIPTION,
+    canonical: buildCanonical(currentPage, activeCategory),
+    schema: currentPage === 1 ? homeSchema : undefined,
+    prevUrl: currentPage > 1 ? buildCanonical(currentPage - 1, activeCategory) : undefined,
+    nextUrl: currentPage < totalPages ? buildCanonical(currentPage + 1, activeCategory) : undefined,
+  });
+
+  function handleCategoryChange(cat: BCNewsCategory | 'all') {
+    const params = new URLSearchParams();
+    if (cat !== 'all') params.set('category', cat);
+    setSearchParams(params, { replace: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }
 
-  const articles = useMemo(() => {
-    if (activeCategory === 'all') return dummyArticles;
-    return getArticlesByCategory(activeCategory);
-  }, [activeCategory]);
+  const heroArticle = isFirstAllPage ? pagedArticles[0] : undefined;
+  const topStories = isFirstAllPage ? pagedArticles.slice(1, 5) : [];
+  const gridArticles = isFirstAllPage ? pagedArticles.slice(5) : pagedArticles;
 
-  const heroArticle = articles[0];
-  const topStories = articles.slice(1, 5);
-  const remainingArticles = articles.slice(5);
-
-  // Group remaining by category for the "all" view
-  const categoryGroups = useMemo(() => {
-    if (activeCategory !== 'all') return [];
-    const cats: BCNewsCategory[] = ['broker-news', 'markets', 'regulation-safety', 'analysis-insights', 'guides'];
-    return cats
-      .map((cat) => ({
-        category: cat,
-        meta: categoryMeta[cat],
-        articles: getArticlesByCategory(cat),
-      }))
-      .filter((g) => g.articles.length > 0);
-  }, [activeCategory]);
+  if (loading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-20 flex justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-secondary-600 border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
-      {/* Category Navigation */}
       <CategoryNav activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
 
-      {/* Breaking / Ticker bar */}
+      {/* Latest ticker */}
       <div className="flex items-center gap-3 py-3 border-b border-border mb-6 overflow-hidden">
         <span className="flex-shrink-0 bg-danger-500 text-white text-sm font-semibold px-3 py-1 rounded">
           LATEST
         </span>
         <p className="text-base text-muted-foreground truncate">
-          {heroArticle?.title}
+          {filteredArticles[0]?.title}
         </p>
       </div>
 
-      {/* Hero Section */}
+      {/* Hero — page 1 "all" only */}
       {heroArticle && (
         <section className="mb-10" aria-label="Featured article">
           <HeroCard article={heroArticle} />
         </section>
       )}
 
-      {/* Top Stories Grid — 4 cards */}
+      {/* Top Stories — page 1 "all" only */}
       {topStories.length > 0 && (
         <section className="mb-14" aria-label="Top stories">
           <div className="flex items-center gap-3 mb-5">
@@ -72,54 +148,38 @@ export default function NewsHome() {
         </section>
       )}
 
-      {/* Category view — filtered results in grid */}
-      {activeCategory !== 'all' && remainingArticles.length > 0 && (
-        <section aria-label="More articles">
-          <div className="flex items-center gap-3 mb-5">
-            <h2 className="text-2xl font-bold text-foreground tracking-tight">
-              More in {categoryMeta[activeCategory].label}
-            </h2>
-            <div className="flex-1 h-px bg-border" />
-          </div>
+      {/* Article grid */}
+      {gridArticles.length > 0 && (
+        <section aria-label={activeCategory === 'all' ? 'More articles' : `${categoryMeta[activeCategory]?.label} articles`}>
+          {(activeCategory !== 'all' || currentPage > 1) && (
+            <div className="flex items-center gap-3 mb-5">
+              <h2 className="text-2xl font-bold text-foreground tracking-tight">
+                {activeCategory === 'all'
+                  ? `All News — Page ${currentPage}`
+                  : categoryMeta[activeCategory]?.label}
+              </h2>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+          )}
+          {isFirstAllPage && gridArticles.length > 0 && (
+            <div className="flex items-center gap-3 mb-5">
+              <h2 className="text-2xl font-bold text-foreground tracking-tight">More News</h2>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+          )}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {remainingArticles.map((article) => (
+            {gridArticles.map((article) => (
               <ArticleCard key={article.uri} article={article} variant="medium" />
             ))}
           </div>
         </section>
       )}
 
-      {/* All view — grouped by category sections */}
-      {activeCategory === 'all' && categoryGroups.map((group) => (
-        <section key={group.category} className="mb-14" aria-label={group.meta.label}>
-          <div className="flex items-center gap-3 mb-1.5">
-            <h2 className="text-2xl font-bold text-foreground tracking-tight">{group.meta.label}</h2>
-            <div className="flex-1 h-px bg-border" />
-            <button
-              onClick={() => handleCategoryChange(group.category)}
-              className="text-sm font-medium text-secondary-600 hover:text-secondary-700 transition-colors focus-visible:outline-2 focus-visible:outline-secondary-500"
-            >
-              View all →
-            </button>
-          </div>
-          <p className="text-sm text-muted-foreground mb-5">{group.meta.description}</p>
-
-          {/* First article large + sidebar list */}
-          <div className="grid gap-6 lg:grid-cols-12 items-start">
-            <div className="lg:col-span-7">
-              <ArticleCard article={group.articles[0]} variant="large" />
-            </div>
-            <div className="lg:col-span-5 border border-border rounded-lg bg-card divide-y divide-border">
-              {group.articles.slice(1, 5).map((article) => (
-                <div key={article.uri} className="px-4">
-                  <ArticleCard article={article} variant="small" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      ))}
-
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        buildHref={(page) => buildHref(page, activeCategory)}
+      />
     </div>
   );
 }

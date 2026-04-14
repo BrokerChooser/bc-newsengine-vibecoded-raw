@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bc-newsengine.netlify.app/sitemap.xml

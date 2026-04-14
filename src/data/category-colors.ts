@@ -29,11 +29,6 @@ export const categoryColors: Record<BCNewsCategory, {
     text: 'text-white',
     border: 'border-violet-600',
   },
-  'guides': {
-    bg: 'bg-sky-500',
-    text: 'text-white',
-    border: 'border-sky-500',
-  },
 };
 
 export function getCategoryColor(category: BCNewsCategory) {

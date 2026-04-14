@@ -1,5 +1,5 @@
 import type { BCNewsCategory } from '../../types/newsapi';
-import { categoryMeta } from '../../data/dummy-articles';
+import { categoryMeta } from '../../data/news-utils';
 import { categoryColors } from '../../data/category-colors';
 
 interface CategoryNavProps {
@@ -13,27 +13,22 @@ const categories: (BCNewsCategory | 'all')[] = [
   'markets',
   'regulation-safety',
   'analysis-insights',
-  'guides',
 ];
 
-/** Map each category to its border-color class for the active underline */
 const activeBorderClass: Record<BCNewsCategory | 'all', string> = {
   'all': 'border-primary-500',
   'broker-news': categoryColors['broker-news'].border,
   'markets': categoryColors['markets'].border,
   'regulation-safety': categoryColors['regulation-safety'].border,
   'analysis-insights': categoryColors['analysis-insights'].border,
-  'guides': categoryColors['guides'].border,
 };
 
-/** Active text color to match the underline */
 const activeTextClass: Record<BCNewsCategory | 'all', string> = {
   'all': 'text-foreground',
   'broker-news': 'text-secondary-600',
   'markets': 'text-emerald-700',
   'regulation-safety': 'text-amber-700',
   'analysis-insights': 'text-violet-700',
-  'guides': 'text-sky-700',
 };
 
 export default function CategoryNav({ activeCategory, onCategoryChange }: CategoryNavProps) {

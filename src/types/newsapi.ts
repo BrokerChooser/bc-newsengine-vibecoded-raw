@@ -90,8 +90,7 @@ export type BCNewsCategory =
   | 'broker-news'
   | 'markets'
   | 'regulation-safety'
-  | 'analysis-insights'
-  | 'guides';
+  | 'analysis-insights';
 
 export interface BCAuthorTake {
   authorName: string;
@@ -104,7 +103,7 @@ export interface BCAuthorTake {
 export interface BCEnrichedArticle extends NewsApiArticle {
   bcCategory: BCNewsCategory;
   bcSlug: string;
-  bcTake: BCAuthorTake;
+  bcTake?: BCAuthorTake;
   bcRelatedBrokers?: string[];
   bcReadingTime: number;
 }
