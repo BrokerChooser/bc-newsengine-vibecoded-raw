@@ -3,6 +3,10 @@ import type { BCEnrichedArticle } from '../../types/newsapi';
 import Badge from '../ui/Badge';
 import { categoryMeta } from '../../data/dummy-articles';
 
+function stripLinks(text: string): string {
+  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+}
+
 interface HeroCardProps {
   article: BCEnrichedArticle;
 }
@@ -47,7 +51,7 @@ export default function HeroCard({ article }: HeroCardProps) {
             </h2>
 
             <p className="text-base leading-relaxed text-slate-300 line-clamp-3">
-              {article.body.slice(0, 220)}...
+              {stripLinks(article.body).slice(0, 220)}...
             </p>
 
             <div className="flex items-center gap-3 pt-2">

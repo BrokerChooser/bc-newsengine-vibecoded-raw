@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
 import NewsHome from './pages/NewsHome';
 import ArticlePage from './pages/ArticlePage';
 
@@ -52,11 +50,10 @@ function FontLoader() {
 
 export default function App() {
   return (
-    <div style={{ fontFamily: "'IBM Plex Sans', sans-serif" }} className="font-sans min-h-screen flex flex-col bg-background">
+    <div style={{ fontFamily: "'IBM Plex Sans', sans-serif" }} className="font-sans min-h-screen flex flex-col bg-white">
       <FontLoader />
       <BrowserRouter>
         <ScrollToTop />
-        <Header />
         <main className="flex-1">
           <Routes>
             <Route path="/news" element={<NewsHome />} />
@@ -64,7 +61,6 @@ export default function App() {
             <Route path="*" element={<Navigate to="/news" replace />} />
           </Routes>
         </main>
-        <Footer />
       </BrowserRouter>
     </div>
   );

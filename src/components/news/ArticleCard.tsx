@@ -4,6 +4,11 @@ import Badge from '../ui/Badge';
 import SentimentIndicator from '../ui/SentimentIndicator';
 import { categoryMeta } from '../../data/dummy-articles';
 
+/** Strip markdown [text](url) links to plain text for card previews */
+function stripLinks(text: string): string {
+  return text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+}
+
 interface ArticleCardProps {
   article: BCEnrichedArticle;
   variant?: 'large' | 'medium' | 'small';
@@ -32,7 +37,7 @@ export default function ArticleCard({ article, variant = 'medium' }: ArticleCard
             {article.title}
           </h3>
           <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
-            {article.body.slice(0, 100)}...
+            {stripLinks(article.body).slice(0, 100)}...
           </p>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-sm text-muted-foreground">{article.source.title}</span>
@@ -79,7 +84,7 @@ export default function ArticleCard({ article, variant = 'medium' }: ArticleCard
               {article.title}
             </h3>
             <p className="text-base text-muted-foreground line-clamp-3 mb-4 leading-relaxed">
-              {article.body.slice(0, 200)}...
+              {stripLinks(article.body).slice(0, 200)}...
             </p>
             <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
               <div className="flex items-center gap-2">
@@ -127,7 +132,7 @@ export default function ArticleCard({ article, variant = 'medium' }: ArticleCard
             {article.title}
           </h3>
           <p className="text-base text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
-            {article.body.slice(0, 140)}...
+            {stripLinks(article.body).slice(0, 140)}...
           </p>
           <div className="flex items-center gap-2 mt-auto pt-3 border-t border-border">
             <span className="text-sm text-muted-foreground">{article.source.title}</span>
