@@ -2,6 +2,12 @@
   command = "npm run build"
   publish = "dist"
 
+# Force static files to be served before SPA fallback applies
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
